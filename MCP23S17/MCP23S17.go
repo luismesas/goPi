@@ -1,7 +1,6 @@
 package MCP23S17
 
 import (
-	"log"
 	"github.com/luismesas/go-rpi/spi"
 )
 
@@ -112,7 +111,6 @@ func (mcp *MCP23S17) Open() error{
 		return err
 	}
 
-	log.Println("MCP23S17 Open")
 	return nil
 }
 
@@ -145,7 +143,7 @@ func (mcp *MCP23S17) Read(address byte) byte{
 	ctrl_byte := mcp.getSPIControlByte(READ_CMD)
 	data, err := mcp.Device.Send([3]byte{ctrl_byte, address, 0})
 	if err != nil {
-		log.Fatalf("Error when reading from MCP23S17: %s\n", err)
+		panic("Error reading from MCP23S17: %s\n", err)
 		return 0x00
 	}
 	if len(data) == 0 {
@@ -160,7 +158,7 @@ func (mcp *MCP23S17) Write(data byte, address byte){
 	ctrl_byte := mcp.getSPIControlByte(WRITE_CMD)
 	_, err := mcp.Device.Send([3]byte{ctrl_byte, address, data})
 	if err != nil {
-		log.Fatalf("Error when writing on MCP23S17: %s\n", err)
+		panic("Error writing on MCP23S17: %s\n", err)
 	}
 }
 

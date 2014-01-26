@@ -1,7 +1,6 @@
 package spi
 
 import (
-	"log"
 	"fmt"
 	"os"
 	"unsafe"
@@ -50,7 +49,6 @@ func (spi *SPIDevice) Open() error{
 		return fmt.Errorf("I can't see %s. Have you enabled the SPI module? (%s)", spiDevice, SPI_HELP_LINK)
 	}
 
-	log.Println("SPI Open")
 	return nil
 }
 
