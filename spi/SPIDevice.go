@@ -2,9 +2,9 @@ package spi
 
 import (
 	"fmt"
+	"github.com/luismesas/go-rpi/ioctl"
 	"os"
 	"unsafe"
-	"github.com/luismesas/go-rpi/ioctl"
 )
 
 const SPIDEV = "/dev/spidev"
@@ -13,24 +13,23 @@ const SPI_HELP_LINK = "http://piface.github.io/pifacecommon/installation.html#en
 // Defaults
 const (
 	SPI_HARDWARE_ADDR = 0
-	SPI_BUS = 0
-	SPI_CHIP = 0
-	SPI_DELAY = 0
+	SPI_BUS           = 0
+	SPI_CHIP          = 0
+	SPI_DELAY         = 0
 )
 
-
-type SPIDevice struct{
-	Bus int // 0
-	Chip int // 0
+type SPIDevice struct {
+	Bus  int      // 0
+	Chip int      // 0
 	file *os.File // nil
 
-	mode uint8
-	bpw uint8
+	mode  uint8
+	bpw   uint8
 	speed uint32
 }
 
 // An SPI Device at /dev/spi<bus>.<chip_select>.
-func NewSPIDevice(bus int, chipSelect int) *SPIDevice{
+func NewSPIDevice(bus int, chipSelect int) *SPIDevice {
 	spi := new(SPIDevice)
 	spi.Bus = bus
 	spi.Chip = chipSelect
@@ -39,7 +38,7 @@ func NewSPIDevice(bus int, chipSelect int) *SPIDevice{
 }
 
 // Opens SPI device
-func (spi *SPIDevice) Open() error{
+func (spi *SPIDevice) Open() error {
 	spiDevice := fmt.Sprintf("%s%d.%d", SPIDEV, spi.Bus, spi.Chip)
 
 	var err error
@@ -53,7 +52,7 @@ func (spi *SPIDevice) Open() error{
 }
 
 // Closes SPI device
-func (spi *SPIDevice) Close() error{
+func (spi *SPIDevice) Close() error {
 	err := spi.file.Close()
 	if err != nil {
 		return fmt.Errorf("Error closing spi", err)
@@ -62,14 +61,14 @@ func (spi *SPIDevice) Close() error{
 }
 
 // Sends bytes over SPI channel and returns []byte response
-func (spi *SPIDevice) Send(bytes_to_send [3]byte) ([]byte, error){
+func (spi *SPIDevice) Send(bytes_to_send [3]byte) ([]byte, error) {
 	wBuffer := bytes_to_send
 	rBuffer := [3]byte{}
 
 	// generates message
 	transfer := SPI_IOC_TRANSFER{}
-	transfer.txBuf = uint64( uintptr( unsafe.Pointer(&wBuffer)))
-	transfer.rxBuf = uint64( uintptr( unsafe.Pointer(&rBuffer)))
+	transfer.txBuf = uint64(uintptr(unsafe.Pointer(&wBuffer)))
+	transfer.rxBuf = uint64(uintptr(unsafe.Pointer(&rBuffer)))
 	transfer.length = uint32(unsafe.Sizeof(wBuffer))
 	transfer.delayUsecs = SPI_DELAY
 	transfer.bitsPerWord = spi.bpw
@@ -83,14 +82,14 @@ func (spi *SPIDevice) Send(bytes_to_send [3]byte) ([]byte, error){
 
 	// generates a valid response
 	ret := make([]byte, unsafe.Sizeof(rBuffer))
-	for i := range(ret) {
+	for i := range ret {
 		ret[i] = rBuffer[i]
 	}
 
 	return ret, nil
 }
 
-func (spi *SPIDevice) SetMode(mode uint8) error{
+func (spi *SPIDevice) SetMode(mode uint8) error {
 	spi.mode = mode
 	err := ioctl.IOCTL(spi.file.Fd(), SPI_IOC_WR_MODE(), uintptr(unsafe.Pointer(&mode)))
 	if err != nil {
@@ -99,7 +98,7 @@ func (spi *SPIDevice) SetMode(mode uint8) error{
 	return nil
 }
 
-func (spi *SPIDevice) SetBitsPerWord(bpw uint8) error{
+func (spi *SPIDevice) SetBitsPerWord(bpw uint8) error {
 	spi.bpw = bpw
 	err := ioctl.IOCTL(spi.file.Fd(), SPI_IOC_WR_BITS_PER_WORD(), uintptr(unsafe.Pointer(&bpw)))
 	if err != nil {
@@ -108,7 +107,7 @@ func (spi *SPIDevice) SetBitsPerWord(bpw uint8) error{
 	return nil
 }
 
-func (spi *SPIDevice) SetSpeed(speed uint32) error{
+func (spi *SPIDevice) SetSpeed(speed uint32) error {
 	spi.speed = speed
 	err := ioctl.IOCTL(spi.file.Fd(), SPI_IOC_WR_MAX_SPEED_HZ(), uintptr(unsafe.Pointer(&speed)))
 	if err != nil {

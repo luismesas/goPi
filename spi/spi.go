@@ -1,8 +1,8 @@
 package spi
 
 import (
-	"unsafe"
 	"github.com/luismesas/go-rpi/ioctl"
+	"unsafe"
 )
 
 const SPI_IOC_MAGIC = 107
@@ -48,11 +48,11 @@ func SPI_IOC_WR_MAX_SPEED_HZ() uintptr {
 }
 
 // Write custom SPI message
-func SPI_IOC_MESSAGE(n uintptr) uintptr{
-	return ioctl.IOW(SPI_IOC_MAGIC, 0 , uintptr(SPI_MESSAGE_SIZE(n)))
+func SPI_IOC_MESSAGE(n uintptr) uintptr {
+	return ioctl.IOW(SPI_IOC_MAGIC, 0, uintptr(SPI_MESSAGE_SIZE(n)))
 }
 
-func SPI_MESSAGE_SIZE(n uintptr) uintptr{
+func SPI_MESSAGE_SIZE(n uintptr) uintptr {
 	if (n * unsafe.Sizeof(SPI_IOC_TRANSFER{})) < (1 << ioctl.IOC_SIZEBITS) {
 		return (n * unsafe.Sizeof(SPI_IOC_TRANSFER{}))
 	} else {
@@ -60,14 +60,13 @@ func SPI_MESSAGE_SIZE(n uintptr) uintptr{
 	}
 }
 
-type SPI_IOC_TRANSFER struct{
-	txBuf uint64
-	rxBuf uint64
-	length uint32
-	speedHz uint32
-	delayUsecs uint16
+type SPI_IOC_TRANSFER struct {
+	txBuf       uint64
+	rxBuf       uint64
+	length      uint32
+	speedHz     uint32
+	delayUsecs  uint16
 	bitsPerWord uint8
-	csChange uint8
-	pad uint32
+	csChange    uint8
+	pad         uint32
 }
-

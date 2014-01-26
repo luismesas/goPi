@@ -6,16 +6,16 @@ import (
 )
 
 const (
-	MCP23S17_MODE = 0
-	MCP23S17_BPW = 8
+	MCP23S17_MODE  = 0
+	MCP23S17_BPW   = 8
 	MCP23S17_SPEED = 10000000
 )
 
 //	Microchip's MCP23S17: A 16-Bit I/O Expander with Serial Interface.
-type MCP23S17 struct{
-	Device *spi.SPIDevice
+type MCP23S17 struct {
+	Device          *spi.SPIDevice
 	HardwareAddress byte
-	
+
 	// Controls the direction of the data I/O.
 	IODIRa *MCP23S17Register
 	IODIRb *MCP23S17Register
@@ -60,7 +60,7 @@ type MCP23S17 struct{
 	OLATb *MCP23S17Register
 }
 
-func NewMCP23S17(hardwareAddress uint8, bus int, chip_select int) *MCP23S17{
+func NewMCP23S17(hardwareAddress uint8, bus int, chip_select int) *MCP23S17 {
 	mcp := new(MCP23S17)
 	mcp.Device = spi.NewSPIDevice(bus, chip_select)
 	mcp.HardwareAddress = hardwareAddress
@@ -90,7 +90,7 @@ func NewMCP23S17(hardwareAddress uint8, bus int, chip_select int) *MCP23S17{
 	return mcp
 }
 
-func (mcp *MCP23S17) Open() error{
+func (mcp *MCP23S17) Open() error {
 
 	err := mcp.Device.Open()
 	if err != nil {
@@ -115,10 +115,9 @@ func (mcp *MCP23S17) Open() error{
 	return nil
 }
 
-func (mcp *MCP23S17) Close() error{
+func (mcp *MCP23S17) Close() error {
 	return mcp.Device.Close()
 }
-
 
 // Returns an SPI control byte.
 // The MCP23S17 is a slave SPI device. The slave address contains
@@ -132,15 +131,15 @@ func (mcp *MCP23S17) Close() error{
 // 	 7 6 5 4 3  2  1   0
 
 // :param read_write_cmd: Read or write command.
-// :type read_write_cmd: int	
+// :type read_write_cmd: int
 func (mcp *MCP23S17) getSPIControlByte(read_write_cmd uint8) byte {
 	board_addr_pattern := (mcp.HardwareAddress << 1) & 0xE
-	rw_cmd_pattern := read_write_cmd & 0x01  // make sure it's just 1 bit long
+	rw_cmd_pattern := read_write_cmd & 0x01 // make sure it's just 1 bit long
 	return 0x40 | board_addr_pattern | rw_cmd_pattern
 }
 
 // Returns the value of the address specified.
-func (mcp *MCP23S17) Read(address byte) byte{
+func (mcp *MCP23S17) Read(address byte) byte {
 	ctrl_byte := mcp.getSPIControlByte(READ_CMD)
 	data, err := mcp.Device.Send([3]byte{ctrl_byte, address, 0})
 	if err != nil {
@@ -155,7 +154,7 @@ func (mcp *MCP23S17) Read(address byte) byte{
 }
 
 // Writes data to the address specified.
-func (mcp *MCP23S17) Write(data byte, address byte){
+func (mcp *MCP23S17) Write(data byte, address byte) {
 	ctrl_byte := mcp.getSPIControlByte(WRITE_CMD)
 	_, err := mcp.Device.Send([3]byte{ctrl_byte, address, data})
 	if err != nil {
@@ -164,24 +163,24 @@ func (mcp *MCP23S17) Write(data byte, address byte){
 }
 
 // Returns the bit specified from the address.
-func (mcp *MCP23S17) ReadBit(bit_num uint, address byte) byte{
+func (mcp *MCP23S17) ReadBit(bit_num uint, address byte) byte {
 	value := mcp.Read(address)
 	return (value >> bit_num) & 1
 }
 
 // Writes the value given to the bit in the address specified.
-func (mcp *MCP23S17) WriteBit(data byte, bit_num uint, address byte){
+func (mcp *MCP23S17) WriteBit(data byte, bit_num uint, address byte) {
 	value := mcp.Read(address)
 	if data > 0 {
 		value = value | (1 << bit_num) //set
 	} else {
-		value = value & ( 0xff ^ (1 << bit_num)) //clear
+		value = value & (0xff ^ (1 << bit_num)) //clear
 	}
 	mcp.Write(value, address)
 }
 
 // Clears the interrupt flags by reading the capture register.
-func (mcp *MCP23S17) ClearInterrupts(port int){
+func (mcp *MCP23S17) ClearInterrupts(port int) {
 	var address byte
 	address = INTCAPA
 	if port == GPIOA {

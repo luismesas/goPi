@@ -7,14 +7,14 @@ import (
 	"time"
 )
 
-func main(){
+func main() {
 
 	// creates a new MCP23S17 instance
 	mcp := MCP23S17.NewMCP23S17(spi.DEFAULT_HARDWARE_ADDR, spi.DEFAULT_BUS, spi.DEFAULT_CHIP)
 
 	// GPIOa outputs
-	gpioa := make([]*MCP23S17.MCP23S17RegisterBit,8)
-	for i := range(gpioa){
+	gpioa := make([]*MCP23S17.MCP23S17RegisterBit, 8)
+	for i := range gpioa {
 		gpioa[i] = MCP23S17.NewMCP23S17RegisterBit(uint(i), MCP23S17.GPIOA, mcp)
 	}
 
