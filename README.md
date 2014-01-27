@@ -3,6 +3,8 @@ go-rpi
 
 A library for using Raspberry Pi on Golang
 
+[![Build Status](https://travis-ci.org/luismesas/go-rpi.png)](https://travis-ci.org/luismesas/go-rpi)
+
 
 current features
 ----------------
