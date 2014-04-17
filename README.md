@@ -20,4 +20,4 @@ Documentation
 
 Usage
 -----
-* See [examples/](https://github.com/luismesas/goPi/tree/master/examples) folder
+* See the [examples/](https://github.com/luismesas/goPi/tree/master/examples) folder
