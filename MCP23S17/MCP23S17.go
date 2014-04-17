@@ -148,9 +148,8 @@ func (mcp *MCP23S17) Read(address byte) byte {
 	}
 	if len(data) == 0 {
 		return 0x00
-	} else {
-		return data[2]
 	}
+	return data[2]
 }
 
 // Writes data to the address specified.
