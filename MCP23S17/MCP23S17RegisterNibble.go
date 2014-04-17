@@ -27,9 +27,8 @@ func NewMCP23S17RegisterNibble(nibble uint, address byte, chip *MCP23S17) *MCP23
 func (register *MCP23S17RegisterNibble) Value() byte {
 	if register.nibble == LOWER_NIBBLE {
 		return register.chip.Read(register.address) & 0x0f
-	} else {
-		return register.chip.Read(register.address) & 0xf0 >> 4
 	}
+	return register.chip.Read(register.address) & 0xf0 >> 4
 }
 
 func (register *MCP23S17RegisterNibble) SetValue(value byte) {
