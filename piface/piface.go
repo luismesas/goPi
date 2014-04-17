@@ -1,4 +1,19 @@
+/* 
+Package piface is for interfacing with a PiFace Digital IO board. 
+
+ - More Info at http://www.piface.org.uk/products/piface_digital/
+ - Guides at http://prod.www.piface.org.uk/guides/
+ - goPi blink example at  https://github.com/luismesas/goPi/blob/master/examples/blink_piface/blink_piface.go
+
+Its possible to connect up to four PiFace boards to a Raspberry Pi, however some jumper
+settings are required to set the hardware address. 
+
+ - See http://prod.www.piface.org.uk/guides/howto/PiFace_Digital_Jumper_Settings/
+
+*/
 package piface
+
+
 
 import (
 	"fmt"
@@ -18,6 +33,7 @@ type PiFaceDigital struct {
 	Switches   []*MCP23S17.MCP23S17RegisterBit
 }
 
+// Create a new PiFaceDigital Instance
 func NewPiFaceDigital(hardware_addr byte, bus int, chip_select int) *PiFaceDigital {
 	pfd := new(PiFaceDigital)
 	pfd.mcp = MCP23S17.NewMCP23S17(hardware_addr, bus, chip_select)
@@ -55,6 +71,7 @@ func NewPiFaceDigital(hardware_addr byte, bus int, chip_select int) *PiFaceDigit
 	return pfd
 }
 
+// Initialize the board
 func (pfd *PiFaceDigital) InitBoard() error {
 
 	err := pfd.mcp.Open()
@@ -85,14 +102,17 @@ func (pfd *PiFaceDigital) InitBoard() error {
 	return nil
 }
 
+// Not Implemented
 func (pfd *PiFaceDigital) EnableInterrupts() error {
 	return fmt.Errorf("EnableInterrupts() Not implemented")
 }
 
+// Not Implemented
 func (pfd *PiFaceDigital) Open() error {
 	return fmt.Errorf("Open() Not implemented")
 }
 
+// Not Implemented
 func (pfd *PiFaceDigital) Close() error {
 	return fmt.Errorf("Close() Not implemented")
 }
