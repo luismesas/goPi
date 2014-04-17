@@ -17,7 +17,7 @@ package piface
 
 import (
 	"fmt"
-	"github.com/luismesas/go-rpi/MCP23S17"
+	"github.com/luismesas/goPi/MCP23S17"
 )
 
 // A PiFace Digital board.

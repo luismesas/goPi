@@ -1,7 +1,7 @@
 package spi
 
 import (
-	"github.com/luismesas/go-rpi/ioctl"
+	"github.com/luismesas/goPi/ioctl"
 	"unsafe"
 )
 

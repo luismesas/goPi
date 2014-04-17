@@ -2,7 +2,7 @@ package MCP23S17
 
 import (
 	"fmt"
-	"github.com/luismesas/go-rpi/spi"
+	"github.com/luismesas/goPi/spi"
 )
 
 const (

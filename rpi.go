@@ -4,8 +4,8 @@ package rpi
 
 // This is the wrong url here ??? 
 import (
-	_ "github.com/luismesas/go-rpi/MCP23S17"
-	_ "github.com/luismesas/go-rpi/ioctl"
-	_ "github.com/luismesas/go-rpi/spi"
-	_ "github.com/luismesas/go-rpi/piface"
+	_ "github.com/luismesas/goPi/MCP23S17"
+	_ "github.com/luismesas/goPi/ioctl"
+	_ "github.com/luismesas/goPi/spi"
+	_ "github.com/luismesas/goPi/piface"
 )
