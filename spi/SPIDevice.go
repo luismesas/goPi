@@ -2,7 +2,7 @@ package spi
 
 import (
 	"fmt"
-	"github.com/luismesas/go-rpi/ioctl"
+	"github.com/luismesas/goPi/ioctl"
 	"os"
 	"unsafe"
 )

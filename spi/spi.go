@@ -1,7 +1,7 @@
 package spi
 
 import (
-	"github.com/luismesas/go-rpi/ioctl"
+	"github.com/luismesas/goPi/ioctl"
 	"unsafe"
 )
 
@@ -55,9 +55,8 @@ func SPI_IOC_MESSAGE(n uintptr) uintptr {
 func SPI_MESSAGE_SIZE(n uintptr) uintptr {
 	if (n * unsafe.Sizeof(SPI_IOC_TRANSFER{})) < (1 << ioctl.IOC_SIZEBITS) {
 		return (n * unsafe.Sizeof(SPI_IOC_TRANSFER{}))
-	} else {
-		return 0
 	}
+	return 0
 }
 
 type SPI_IOC_TRANSFER struct {
