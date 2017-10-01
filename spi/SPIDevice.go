@@ -2,9 +2,10 @@ package spi
 
 import (
 	"fmt"
-	"github.com/luismesas/goPi/ioctl"
 	"os"
 	"unsafe"
+
+	"github.com/luismesas/goPi/ioctl"
 )
 
 const SPIDEV = "/dev/spidev"
@@ -26,13 +27,15 @@ type SPIDevice struct {
 	mode  uint8
 	bpw   uint8
 	speed uint32
+	delay uint16
 }
 
 // An SPI Device at /dev/spi<bus>.<chip_select>.
-func NewSPIDevice(bus int, chipSelect int) *SPIDevice {
+func NewSPIDevice(bus int, chipSelect int, delayUsec uint16) *SPIDevice {
 	spi := new(SPIDevice)
 	spi.Bus = bus
 	spi.Chip = chipSelect
+	spi.delay = delayUsec
 
 	return spi
 }
@@ -61,16 +64,16 @@ func (spi *SPIDevice) Close() error {
 }
 
 // Sends bytes over SPI channel and returns []byte response
-func (spi *SPIDevice) Send(bytes_to_send [3]byte) ([]byte, error) {
-	wBuffer := bytes_to_send
-	rBuffer := [3]byte{}
+func (spi *SPIDevice) Send(wBuffer []byte) ([]byte, error) {
+	length := len(wBuffer)
+	rBuffer := make([]byte, length)
 
 	// generates message
 	transfer := SPI_IOC_TRANSFER{}
-	transfer.txBuf = uint64(uintptr(unsafe.Pointer(&wBuffer)))
-	transfer.rxBuf = uint64(uintptr(unsafe.Pointer(&rBuffer)))
-	transfer.length = uint32(unsafe.Sizeof(wBuffer))
-	transfer.delayUsecs = SPI_DELAY
+	transfer.txBuf = uint64(uintptr(unsafe.Pointer(&wBuffer[0])))
+	transfer.rxBuf = uint64(uintptr(unsafe.Pointer(&rBuffer[0])))
+	transfer.length = uint32(length)
+	transfer.delayUsecs = spi.delay
 	transfer.bitsPerWord = spi.bpw
 	transfer.speedHz = spi.speed
 
@@ -80,13 +83,7 @@ func (spi *SPIDevice) Send(bytes_to_send [3]byte) ([]byte, error) {
 		return nil, fmt.Errorf("Error on sending: %s\n", err)
 	}
 
-	// generates a valid response
-	ret := make([]byte, unsafe.Sizeof(rBuffer))
-	for i := range ret {
-		ret[i] = rBuffer[i]
-	}
-
-	return ret, nil
+	return rBuffer, nil
 }
 
 func (spi *SPIDevice) SetMode(mode uint8) error {

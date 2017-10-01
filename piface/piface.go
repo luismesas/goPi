@@ -1,22 +1,21 @@
-/* 
-Package piface is for interfacing with a PiFace Digital IO board. 
+/*
+Package piface is for interfacing with a PiFace Digital IO board.
 
  - More Info at http://www.piface.org.uk/products/piface_digital/
  - Guides at http://prod.www.piface.org.uk/guides/
  - goPi blink example at  https://github.com/luismesas/goPi/blob/master/examples/blink_piface/blink_piface.go
 
 Its possible to connect up to four PiFace boards to a Raspberry Pi, however some jumper
-settings are required to set the hardware address. 
+settings are required to set the hardware address.
 
  - See http://prod.www.piface.org.uk/guides/howto/PiFace_Digital_Jumper_Settings/
 
 */
 package piface
 
-
-
 import (
 	"fmt"
+
 	"github.com/luismesas/goPi/MCP23S17"
 )
 

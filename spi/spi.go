@@ -1,8 +1,9 @@
 package spi
 
 import (
-	"github.com/luismesas/goPi/ioctl"
 	"unsafe"
+
+	"github.com/luismesas/goPi/ioctl"
 )
 
 const SPI_IOC_MAGIC = 107
