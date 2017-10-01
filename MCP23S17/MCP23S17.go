@@ -2,6 +2,7 @@ package MCP23S17
 
 import (
 	"fmt"
+
 	"github.com/luismesas/goPi/spi"
 )
 
@@ -62,7 +63,7 @@ type MCP23S17 struct {
 
 func NewMCP23S17(hardwareAddress uint8, bus int, chip_select int) *MCP23S17 {
 	mcp := new(MCP23S17)
-	mcp.Device = spi.NewSPIDevice(bus, chip_select)
+	mcp.Device = spi.NewSPIDevice(bus, chip_select, spi.SPI_DELAY)
 	mcp.HardwareAddress = hardwareAddress
 
 	mcp.IODIRa = NewMCP23S17Register(IODIRA, mcp)
@@ -141,7 +142,7 @@ func (mcp *MCP23S17) getSPIControlByte(read_write_cmd uint8) byte {
 // Returns the value of the address specified.
 func (mcp *MCP23S17) Read(address byte) byte {
 	ctrl_byte := mcp.getSPIControlByte(READ_CMD)
-	data, err := mcp.Device.Send([3]byte{ctrl_byte, address, 0})
+	data, err := mcp.Device.Send([]byte{ctrl_byte, address, 0})
 	if err != nil {
 		panic(fmt.Sprintf("Error reading from MCP23S17: %s\n", err))
 		return 0x00
@@ -155,7 +156,7 @@ func (mcp *MCP23S17) Read(address byte) byte {
 // Writes data to the address specified.
 func (mcp *MCP23S17) Write(data byte, address byte) {
 	ctrl_byte := mcp.getSPIControlByte(WRITE_CMD)
-	_, err := mcp.Device.Send([3]byte{ctrl_byte, address, data})
+	_, err := mcp.Device.Send([]byte{ctrl_byte, address, data})
 	if err != nil {
 		panic(fmt.Sprintf("Error writing on MCP23S17: %s\n", err))
 	}
